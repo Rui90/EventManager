@@ -42,6 +42,7 @@ namespace ProAgil.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
             app.UseRouting();
