@@ -17,7 +17,14 @@ Small service that returns events that are stored in an sql lite database.
 ### Angular introduction
 
 First components integrated with bootstrap that requests the .NET CORE Rest Api.
-Playground with grids, bindings, interpolation and data-binding.
+Playground with grids, bindings, interpolation and data-binding using bootstrap. It also uses reactive forms for form validation.
+
+List of ngx-bootstrap components examples that are being used:
+
+- Modal
+- Dropdown
+- Datepicker
+- Tooltip
 
 Angular Organization:
 
@@ -29,9 +36,11 @@ Angular Organization:
 
 ### Upcoming
 
-Reactive Forms
-AutoMapper
-Routes
-Identity
-Angular Authentication
-Docker
+- AutoMapper
+- Routes
+- Identity
+- Angular Authentication
+- Docker
+- Project clean up (Avoid repetition, make it generic)
+- Internationalization
+- Unit testing

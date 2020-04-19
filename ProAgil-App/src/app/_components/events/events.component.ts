@@ -1,8 +1,13 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../_services/event.service';
 import { Event } from '../../_models/Event';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { BsLocaleService, } from 'ngx-bootstrap/datepicker';
+import { defineLocale } from 'ngx-bootstrap/chronos';
+import { ptBrLocale } from 'ngx-bootstrap/locale';
 
+defineLocale('pt-br', ptBrLocale);
 @Component({
   selector: 'app-events',
   templateUrl: './events.component.html',
@@ -12,16 +17,24 @@ export class EventsComponent implements OnInit {
 
   filteredEvents: Event[] = [];
   events: Event[] = [];
+  event: Event;
   imageWidth = 50;
   imageMargin = 2;
   showImage = false;
   modalRef: BsModalRef;
   // tslint:disable-next-line: variable-name
   _eventFilter: string;
+  registerForm: FormGroup;
+  editMode = false;
+  deleteModal = false;
+  dialogBoxBodyText: string;
 
   constructor(
     private eventService: EventService,
-    private modalService: BsModalService) { }
+    private formbuilder: FormBuilder,
+    private localService: BsLocaleService) {
+      this.localService.use('pt-br');
+     }
 
   get eventFilter() {
     return this._eventFilter;
@@ -32,11 +45,25 @@ export class EventsComponent implements OnInit {
     this.filteredEvents = this.eventFilter ? this.filterEvents(this.eventFilter) : this.events;
   }
 
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
+  editEvent(event: Event, template: any) {
+    this.editMode = true;
+    this.openModal(template);
+    this.event = event;
+    this.registerForm.patchValue(this.event);
+  }
+
+  createEvent(template: any) {
+    this.editMode = false; 
+    this.openModal(template);
+  }
+
+  openModal(template: any) {
+    this.registerForm.reset();
+    template.show();
   }
 
   ngOnInit() {
+    this.validation();
     this.getEvents();
   }
 
@@ -56,6 +83,62 @@ export class EventsComponent implements OnInit {
       },
       error => { console.log(error); }
     );
+  }
+
+  saveChanges(template: any) {
+    if (this.registerForm.valid) {
+      if (this.editMode) {
+        this.event = Object.assign({id: this.event.id}, this.registerForm.value);
+        this.eventService.updateEvent(this.event).subscribe(
+          (newEvent: Event) => {
+            template.hide();
+            this.getEvents();
+          },
+          (error) => {
+              console.log(error);
+          });
+      } else {
+        this.event = Object.assign({}, this.registerForm.value);
+        this.eventService.createEvent(this.event).subscribe(
+          (newEvent: Event) => {
+            template.hide();
+            this.getEvents();
+          },
+          (error) => {
+              console.log(error);
+          });
+      }
+    }
+  }
+
+  deleteEvent(event: Event, template: any) {
+    this.openModal(template);
+    this.event = event;
+    this.dialogBoxBodyText = `Are you sure you want to delete the event: ${event.theme}?`;
+  }
+
+  confirmDelete(template: any) {
+    this.eventService.deleteEvent(this.event.id).subscribe(
+      () => {
+        template.hide();
+        this.getEvents();
+      },
+      (errors) => {
+        console.log(errors);
+      }
+    );
+  }
+
+  validation() {
+    this.registerForm = this.formbuilder.group({
+      theme: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+      location: ['', Validators.required],
+      date: ['', Validators.required],
+      capacity: ['', [Validators.required, Validators.max(120000)]],
+      phoneNumber: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      imageUrl: []
+    });
   }
 
 }
