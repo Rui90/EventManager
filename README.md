@@ -1,12 +1,37 @@
 ### Pro agil
 
-Basic REST Api Sekeleton on top of .NET Core 3.1 with Entity Framework 3.1, integrated with a SPA on top of Angular 9. 
+Basic REST Api Sekeleton on top of .NET Core 3.1 with Entity Framework 3.1, integrated with a SPA on top of Angular 9.
 
 The project will increment across the time.
 
-Step 1:
+### .NET Core introduction
 
+Small service that returns events that are stored in an sql lite database.
 
-Also created a basic application on Angular 9 with bootstrap and fortawesome that connects to the web api.
+.NET Core Organization into multiple projects:
 
-Identity Server will be added in the next couple days within some extra features.
+- WebApi: where are the controllers that we will access
+- Repository:
+- Domain: All the models that we're going to use with Entity Framework and relations betweens entities
+
+### Angular introduction
+
+First components integrated with bootstrap that requests the .NET CORE Rest Api.
+Playground with grids, bindings, interpolation and data-binding.
+
+Angular Organization:
+
+- Models: where we replicate the .NET models that we want to provide to the FE Single Page
+- Services: Where we make the connection between web api and FE
+- Components: Where is the actual content and logic that we will access within the page
+- Helpers: Where are the pipes and directives
+- Util: Static methods and constants
+
+### Upcoming
+
+Reactive Forms
+AutoMapper
+Routes
+Identity
+Angular Authentication
+Docker
