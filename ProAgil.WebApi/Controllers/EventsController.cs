@@ -5,6 +5,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using ProAgil.Repository;
 using ProAgil.Domain;
+using AutoMapper;
+using ProAgil.WebApi.ViewModels;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace ProAgil.WebApi.Controllers
 {
@@ -15,20 +19,26 @@ namespace ProAgil.WebApi.Controllers
 
         private readonly ILogger<EventsController> _logger;
         private readonly IProAgilRepository _repository;
+        private readonly IMapper _mapper;
 
-        public EventsController(ILogger<EventsController> logger, IProAgilRepository repository)
+        public EventsController(
+            ILogger<EventsController> logger, 
+            IProAgilRepository repository,
+            IMapper mapper)
         {
             _logger = logger;
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Event model)
+        public async Task<IActionResult> Create(EventViewModel model)
         {
             try {
-                _repository.Add(model);
+                var mappedModel = _mapper.Map<Event>(model);
+                _repository.Add(mappedModel);
                 if(await _repository.SaveChangesAsync()) {
-                    return Created($"/api/event/{model.Id}", model);
+                    return Created($"/api/event/{model.Id}", _mapper.Map<EventViewModel>(mappedModel));
                 }
             } catch (Exception) {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
@@ -44,9 +54,10 @@ namespace ProAgil.WebApi.Controllers
                 if (ev == null) {
                     return NotFound();
                 }
-                _repository.Update(model);
+                ev = _mapper.Map(model, ev);
+                _repository.Update(ev);
                 if (await _repository.SaveChangesAsync()) {
-                    return Created($"/api/event/{model.Id}", model);
+                    return Created($"/api/event/{model.Id}",  _mapper.Map<EventViewModel>(ev));
                 }
             } catch (Exception) {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
@@ -76,10 +87,11 @@ namespace ProAgil.WebApi.Controllers
         public async Task<IActionResult> Get()
         {
             try {
-                var result = await _repository.GetAllEventsAsync(true);
+                var events = await _repository.GetAllEventsAsync(true);
+                var result = _mapper.Map<IEnumerable<EventViewModel>>(events);
                 return Ok(result);
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
+            } catch (Exception e) {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Database failed {e.Message} mapper {_mapper}");
             }
         }
 
@@ -87,7 +99,7 @@ namespace ProAgil.WebApi.Controllers
         public async Task<IActionResult> GetById(int eventId)
         {
             try {
-                var result = await _repository.GetEventAsyncById(eventId, true);
+                var result = _mapper.Map<EventViewModel>(await _repository.GetEventAsyncById(eventId, true));
                 return Ok(result);
             } catch (Exception) {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
