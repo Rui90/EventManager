@@ -11,7 +11,7 @@ Small service that returns events that are stored in an sql lite database.
 .NET Core Organization into multiple projects:
 
 - WebApi: where are the controllers that we will access
-- Repository:
+- Repository: Migrations and database accessors
 - Domain: All the models that we're going to use with Entity Framework and relations betweens entities
 
 ### Angular introduction
@@ -36,10 +36,9 @@ Angular Organization:
 
 ### Upcoming
 
-- AutoMapper
-- Routes
+- Angular Routing
 - Identity
-- Angular Authentication
+- Angular Authentication with JWT
 - Docker
 - Project clean up (Avoid repetition, make it generic)
 - Internationalization

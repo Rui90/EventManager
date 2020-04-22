@@ -6,6 +6,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { BsLocaleService, } from 'ngx-bootstrap/datepicker';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
+import { ToastrService } from 'ngx-toastr';
 
 defineLocale('pt-br', ptBrLocale);
 @Component({
@@ -15,6 +16,7 @@ defineLocale('pt-br', ptBrLocale);
 })
 export class EventsComponent implements OnInit {
 
+  title = 'Events';
   filteredEvents: Event[] = [];
   events: Event[] = [];
   event: Event;
@@ -32,7 +34,8 @@ export class EventsComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private formbuilder: FormBuilder,
-    private localService: BsLocaleService) {
+    private localService: BsLocaleService,
+    private toastr: ToastrService) {
       this.localService.use('pt-br');
      }
 
@@ -81,7 +84,9 @@ export class EventsComponent implements OnInit {
         this.events = response;
         this.filteredEvents = this.events;
       },
-      error => { console.log(error); }
+      () => { 
+        this.toastr.error('Error loading events.');
+       }
     );
   }
 
@@ -93,9 +98,10 @@ export class EventsComponent implements OnInit {
           (newEvent: Event) => {
             template.hide();
             this.getEvents();
+            this.toastr.success('Updated with success.');
           },
           (error) => {
-              console.log(error);
+            this.toastr.error('An error ocurred');
           });
       } else {
         this.event = Object.assign({}, this.registerForm.value);
@@ -103,9 +109,10 @@ export class EventsComponent implements OnInit {
           (newEvent: Event) => {
             template.hide();
             this.getEvents();
+            this.toastr.success('Inserted with success.');
           },
           (error) => {
-              console.log(error);
+            this.toastr.error('An error ocurred');
           });
       }
     }
@@ -122,9 +129,10 @@ export class EventsComponent implements OnInit {
       () => {
         template.hide();
         this.getEvents();
+        this.toastr.success('Dleted with success');
       },
-      (errors) => {
-        console.log(errors);
+      () => {
+        this.toastr.error('An error ocurred');
       }
     );
   }

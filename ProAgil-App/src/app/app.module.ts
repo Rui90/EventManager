@@ -16,13 +16,22 @@ import { NavComponent } from './_components/nav/nav.component';
 import { DateTimeFormatPipe } from './_helpers/DateTimeFormat.pipe';
 
 import { EventService } from './_services/event.service';
+import { ToastrModule } from 'ngx-toastr';
+import { GuestsComponent } from './_components/guests/guests.component';
+import { DashboardComponent } from './_components/dashboard/dashboard.component';
+import { ContactsComponent } from './_components/contacts/contacts.component';
+import { TitleComponent } from './_core/title/title.component';
 
 @NgModule({
    declarations: [
       AppComponent,
       EventsComponent,
       NavComponent,
-      DateTimeFormatPipe
+      DateTimeFormatPipe,
+      GuestsComponent,
+      DashboardComponent,
+      ContactsComponent,
+      TitleComponent
    ],
    imports: [
       BrowserModule,
@@ -34,7 +43,8 @@ import { EventService } from './_services/event.service';
       AppRoutingModule,
       HttpClientModule,
       FormsModule,
-      ReactiveFormsModule
+      ReactiveFormsModule,
+      ToastrModule.forRoot()
    ],
    providers: [
       EventService
