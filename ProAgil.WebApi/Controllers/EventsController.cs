@@ -9,6 +9,8 @@ using AutoMapper;
 using ProAgil.WebApi.ViewModels;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Net.Http.Headers;
 
 namespace ProAgil.WebApi.Controllers
 {
@@ -92,6 +94,28 @@ namespace ProAgil.WebApi.Controllers
                 return Ok(result);
             } catch (Exception e) {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"Database failed {e.Message} mapper {_mapper}");
+            }
+        }
+
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload()
+        {
+            try {
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0) {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName;
+                    var fullPath = Path.Combine(pathToSave, fileName.Replace("\"", "")).Trim();
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create)) {
+                        file.CopyTo(stream);
+                    }
+                }
+                return Ok();
+            } catch (Exception e) {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Error uploading file {e.Message}");
             }
         }
 

@@ -36,10 +36,10 @@ Angular Organization:
 
 ### Upcoming
 
-- Angular Routing
 - Identity
 - Angular Authentication with JWT
 - Docker
 - Project clean up (Avoid repetition, make it generic)
+- Permissions
 - Internationalization
 - Unit testing

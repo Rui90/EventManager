@@ -37,8 +37,8 @@
     <tr *ngFor="let event of filteredEvents">
       <td>
         <img 
-          *ngIf="showImage" 
-          src="http://localhost:5000/img/{{event.imageUrl}}"
+          *ngIf="showImage && event.imageUrl" 
+          src="{{getUrl(event.imageUrl)}}"
           [style.width.px]="imageWidth"
           [style.margin.px]="imageMargin">
         </td>
@@ -119,8 +119,7 @@
                 formControlName="date" 
                 placeholder="Insert event date"
                 [ngClass]="{'is-invalid': registerForm.get('date').errors && registerForm.get('date').touched}"
-                value="{{registerForm.controls['date'] | DateTimeFormat}}"
-                [(ngModel)]="registerForm.controls['date']"
+                value="{{ registerForm.get('date').value | DateTimeFormat}}"
                 bsDatepicker
                 [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY hh:mm a'}">
               <div  *ngIf="registerForm.get('date').hasError('required') && registerForm.get('date').touched" class="invalid-feedback">
@@ -142,7 +141,20 @@
             </div>
             <div class="form-group col-md-9">
               <label>Image</label>
-              <input type="text" class="form-control" formControlName="imageUrl" placeholder="Insert event image">
+              <table>
+                <tr>
+                  <td>
+                    <button class="btn btn-success" (click)="file.click()">Send Image</button>
+                    <input #file 
+                      type="file" 
+                      class="form-control" 
+                      style="display: none"
+                      formControlName="imageUrl" 
+                      placeholder="Insert event image"
+                      (change)="onFileChange($event)">
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>  
           <div class="form-row">

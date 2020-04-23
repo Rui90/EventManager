@@ -31,6 +31,10 @@ export class EventsComponent implements OnInit {
   deleteModal = false;
   dialogBoxBodyText: string;
 
+  file: File;
+  fileNameToUpdate: string;
+  fileTime: string;
+
   constructor(
     private eventService: EventService,
     private formbuilder: FormBuilder,
@@ -51,7 +55,9 @@ export class EventsComponent implements OnInit {
   editEvent(event: Event, template: any) {
     this.editMode = true;
     this.openModal(template);
-    this.event = event;
+    this.event = Object.assign({}, event);
+    this.fileNameToUpdate = event.imageUrl.toString();
+    this.event.imageUrl = '';
     this.registerForm.patchValue(this.event);
   }
 
@@ -84,16 +90,47 @@ export class EventsComponent implements OnInit {
         this.events = response;
         this.filteredEvents = this.events;
       },
-      () => { 
+      () => {
         this.toastr.error('Error loading events.');
        }
     );
   }
 
+  getUrl(imageUrl: string) {
+    return `http://localhost:5000/resources/images/${imageUrl}`;
+  }
+
+  onFileChange(event) {
+    const reader = new FileReader();
+    if (event.target.files && event.target.files.length) {
+      this.file = event.target.files;
+    }
+  }
+
+  uploadDocument() {
+    if (this.file) {
+      this.showImage = false;
+      if (!this.editMode || !this.fileNameToUpdate) {
+        const image = this.event.imageUrl.split('\\', 3);
+        this.event.imageUrl = image[2];
+        this.eventService.uploadDocument(this.file, this.event.imageUrl).subscribe(
+          () => this.fileTime = new Date().getMilliseconds().toString()
+        ).add(() => this.showImage = true);
+      } else {
+        this.event.imageUrl = this.fileNameToUpdate;
+        this.eventService.uploadDocument(this.file, this.fileNameToUpdate).subscribe(
+          () => this.fileTime = new Date().getMilliseconds().toString()
+        ).add(() => this.showImage = true);
+      }
+    }
+  }
+
   saveChanges(template: any) {
     if (this.registerForm.valid) {
+
       if (this.editMode) {
         this.event = Object.assign({id: this.event.id}, this.registerForm.value);
+        this.uploadDocument();
         this.eventService.updateEvent(this.event).subscribe(
           (newEvent: Event) => {
             template.hide();
@@ -105,6 +142,7 @@ export class EventsComponent implements OnInit {
           });
       } else {
         this.event = Object.assign({}, this.registerForm.value);
+        this.uploadDocument();
         this.eventService.createEvent(this.event).subscribe(
           (newEvent: Event) => {
             template.hide();

@@ -9,6 +9,9 @@ using ProAgil.Repository.Data;
 using ProAgil.Repository;
 using AutoMapper;
 using System;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http;
 
 namespace ProAgil.WebApi
 {
@@ -41,6 +44,11 @@ namespace ProAgil.WebApi
             }
 
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions() {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+                RequestPath = new PathString("/Resources")
+            });
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
