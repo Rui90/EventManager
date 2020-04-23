@@ -13,7 +13,7 @@ namespace ProAgil.Domain
 
         public string Theme {get;set;}
 
-        public int Capacity {get;set;}
+        public decimal Capacity {get;set;}
 
         public string ImageUrl { get; set;}
 
