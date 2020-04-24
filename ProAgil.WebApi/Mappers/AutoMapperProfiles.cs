@@ -1,6 +1,7 @@
 using System.Linq;
 using AutoMapper;
 using ProAgil.Domain;
+using ProAgil.Domain.Identity;
 using ProAgil.WebApi.ViewModels;
 
 namespace ProAgil.WebApi.Mappers
@@ -15,6 +16,9 @@ namespace ProAgil.WebApi.Mappers
             CreateMap<SocialNetwork, SocialNetworkViewModel>().ReverseMap();
             CreateMap<Guest, GuestViewModel>()
                 .ForMember(dest => dest.Events, opt => opt.MapFrom(from => from.GuestsEvents.Select(x => x.Event).ToList())).ReverseMap();
+
+            CreateMap<User, UserViewModel>().ReverseMap();
+            CreateMap<User, UserLoginViewModel>().ReverseMap();
         }
     }
 }

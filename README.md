@@ -7,6 +7,7 @@ The project will increment across the time.
 ### .NET Core introduction
 
 Small service that returns events that are stored in an sql lite database.
+It uses the Identity Authentication System with the normal JWT Authorization Token.
 
 .NET Core Organization into multiple projects:
 
@@ -14,7 +15,11 @@ Small service that returns events that are stored in an sql lite database.
 - Repository: Migrations and database accessors
 - Domain: All the models that we're going to use with Entity Framework and relations betweens entities
 
-### Angular introduction
+All the endpoints current available can be accessed be seen on Swagger available through:
+
+http://localhost:5000/swagger/index.html
+
+### Angular introduction (Currently not working as expected waiting for Authentication integration)
 
 First components integrated with bootstrap that requests the .NET CORE Rest Api.
 Playground with grids, bindings, interpolation and data-binding using bootstrap. It also uses reactive forms for form validation.
@@ -36,7 +41,6 @@ Angular Organization:
 
 ### Upcoming
 
-- Identity
 - Angular Authentication with JWT
 - Docker
 - Project clean up (Avoid repetition, make it generic)
