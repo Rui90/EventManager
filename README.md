@@ -41,7 +41,6 @@ Angular Organization:
 
 ### Upcoming
 
-- Angular Authentication with JWT
 - Docker
 - Project clean up (Avoid repetition, make it generic)
 - Permissions

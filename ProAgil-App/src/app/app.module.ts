@@ -6,7 +6,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
@@ -21,6 +21,10 @@ import { GuestsComponent } from './_components/guests/guests.component';
 import { DashboardComponent } from './_components/dashboard/dashboard.component';
 import { ContactsComponent } from './_components/contacts/contacts.component';
 import { TitleComponent } from './_core/title/title.component';
+import { UserComponent } from './_components/user/user.component';
+import { LoginComponent } from './_components/user/login/login.component';
+import { RegistrationComponent } from './_components/user/registration/registration.component';
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 @NgModule({
    declarations: [
@@ -31,7 +35,10 @@ import { TitleComponent } from './_core/title/title.component';
       GuestsComponent,
       DashboardComponent,
       ContactsComponent,
-      TitleComponent
+      TitleComponent,
+      UserComponent,
+      LoginComponent,
+      RegistrationComponent
    ],
    imports: [
       BrowserModule,
@@ -47,7 +54,10 @@ import { TitleComponent } from './_core/title/title.component';
       ToastrModule.forRoot()
    ],
    providers: [
-      EventService
+      EventService,
+      {
+         provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
+      }
    ],
    bootstrap: [
       AppComponent

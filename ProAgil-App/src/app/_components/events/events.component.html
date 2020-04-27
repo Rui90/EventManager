@@ -63,7 +63,7 @@
       </td>
     </tr>
   </tbody>
-  <tfoot *ngIf="!events">
+  <tfoot *ngIf="!events || events.length === 0">
     <tr>
       <td colspan="7" class="text-center">
         <h3>
