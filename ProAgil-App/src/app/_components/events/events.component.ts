@@ -33,7 +33,6 @@ export class EventsComponent implements OnInit {
 
   file: File;
   fileNameToUpdate: string;
-  fileTime: string;
 
   constructor(
     private eventService: EventService,
@@ -114,12 +113,10 @@ export class EventsComponent implements OnInit {
         const image = this.event.imageUrl.split('\\', 3);
         this.event.imageUrl = image[2];
         this.eventService.uploadDocument(this.file, this.event.imageUrl).subscribe(
-          () => this.fileTime = new Date().getMilliseconds().toString()
         ).add(() => this.showImage = true);
       } else {
         this.event.imageUrl = this.fileNameToUpdate;
         this.eventService.uploadDocument(this.file, this.fileNameToUpdate).subscribe(
-          () => this.fileTime = new Date().getMilliseconds().toString()
         ).add(() => this.showImage = true);
       }
     }

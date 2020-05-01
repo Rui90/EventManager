@@ -30,7 +30,7 @@
       <th>Date</th>
       <th>Capacity</th>
       <th>Lot</th>
-      <th>Options</th>
+      <th colspan="2">Options</th>
     </tr>
   </thead>
   <tbody *ngIf="events && events.length">
@@ -60,6 +60,9 @@
           <button class="btn-sm btn-success" tooltip="Edit" (click)="editEvent(event, template)"><i class="fa fa-edit"></i></button>
           <button class="btn-sm btn-danger" tooltip="Delete" (click)="deleteEvent(event, confirm)"><i class="fa fa-eraser"></i></button>
         </div>
+      </td>
+      <td>
+        <a [routerLink]="['/events', event.id, 'edit']" tooltip="Event Detail" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
       </td>
     </tr>
   </tbody>

@@ -2,7 +2,7 @@ export interface Lot {
     id: number;
     name: string;
     price: number;
-    beingDate?: Date;
+    beginDate?: Date;
     endDate?: Date;
     quantity: number;
     eventId: number;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -93,6 +94,11 @@ namespace ProAgil.Repository
             }
             query = query.OrderBy(q => q.Name).Where(q => q.Name.ToLower().Contains(name.ToLower()));
             return await query.ToArrayAsync();
+        }
+
+        public void DeleteRange<T>(IList<T> entity) where T : class
+        {
+            _context.RemoveRange(entity);
         }
     }
 }

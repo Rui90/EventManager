@@ -25,6 +25,8 @@ import { UserComponent } from './_components/user/user.component';
 import { LoginComponent } from './_components/user/login/login.component';
 import { RegistrationComponent } from './_components/user/registration/registration.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
+import { EventEditComponent } from './_components/events/event-edit/event-edit.component';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 @NgModule({
    declarations: [
@@ -38,7 +40,8 @@ import { AuthInterceptor } from './auth/auth.interceptor';
       TitleComponent,
       UserComponent,
       LoginComponent,
-      RegistrationComponent
+      RegistrationComponent,
+      EventEditComponent
    ],
    imports: [
       BrowserModule,
@@ -51,7 +54,8 @@ import { AuthInterceptor } from './auth/auth.interceptor';
       HttpClientModule,
       FormsModule,
       ReactiveFormsModule,
-      ToastrModule.forRoot()
+      ToastrModule.forRoot(),
+      TabsModule.forRoot()
    ],
    providers: [
       EventService,

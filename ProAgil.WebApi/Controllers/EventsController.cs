@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Net.Http.Headers;
+using System.Linq;
 
 namespace ProAgil.WebApi.Controllers
 {
@@ -57,12 +58,20 @@ namespace ProAgil.WebApi.Controllers
                     return NotFound();
                 }
                 ev = _mapper.Map(model, ev);
+                var lotsIds = new List<int>();
+                var socialNetworksIds = new List<int>();
+                model.Lots.ForEach(x => lotsIds.Add(x.Id));
+                model.SocialNetworks.ForEach(x => socialNetworksIds.Add(x.Id));
+                var lotsToRemove = ev.Lots.Where(x => !lotsIds.Contains(x.Id));
+                var socialNetworkIdsToRemove = ev.Lots.Where(x => !socialNetworksIds.Contains(x.Id));
+                if (lotsToRemove.Count() > 0) { _repository.DeleteRange(lotsToRemove.ToList()); }
+                if (socialNetworkIdsToRemove.Count() > 0) { _repository.DeleteRange(socialNetworkIdsToRemove.ToList()); }
                 _repository.Update(ev);
                 if (await _repository.SaveChangesAsync()) {
                     return Created($"/api/event/{model.Id}",  _mapper.Map<EventViewModel>(ev));
                 }
             } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
             }
             return BadRequest();
         }
