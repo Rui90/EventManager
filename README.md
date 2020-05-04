@@ -1,4 +1,4 @@
-### Pro agil
+### Event Manager
 
 Basic REST Api Sekeleton on top of .NET Core 3.1 with Entity Framework 3.1, integrated with a SPA on top of Angular 9.
 

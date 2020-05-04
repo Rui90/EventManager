@@ -52,7 +52,7 @@ testem.log
 .DS_Store
 Thumbs.db
 .vscode/settings.json
-ProAgil.WebApi/ProAgil.db
-ProAgil.WebApi/ProAgil.db-shm
-ProAgil.WebApi/ProAgil.db-wal
-ProAgil.WebApi/ProAgil.db
+EventManager.WebApi/EventManager.db
+EventManager.WebApi/EventManager.db-shm
+EventManager.WebApi/EventManager.db-wal
+EventManager.WebApi/EventManager.db
