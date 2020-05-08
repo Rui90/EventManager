@@ -46,13 +46,13 @@ namespace EventManager.Repository
             return await query.ToArrayAsync();
         }
 
-        public async Task<Event[]> GetAllEventsAsyncByTheme(string Theme, bool includeGuests = false)
+        public async Task<Event[]> SearchEvents(string searchQuery, bool includeGuests = false)
         {
             IQueryable<Event> query = _context.Events.Include(e => e.Lots).Include(e => e.SocialNetworks);
             if (includeGuests) {
                 query = query.Include(e => e.GuestsEvents).ThenInclude(e => e.Guest);
             }
-            query = query.OrderByDescending(q => q.Date).Where(e => e.Theme.ToLower().Contains(Theme.ToLower()));
+            query = query.OrderByDescending(q => q.Date).Where(e => e.Theme.ToLower().Contains(searchQuery.ToLower()));
             return await query.ToArrayAsync();
         }
 

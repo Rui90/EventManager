@@ -1,17 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
-using EventManager.Repository;
-using EventManager.Domain;
-using AutoMapper;
-using EventManager.WebApi.ViewModels;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Linq;
+using EventManager.Services.Interfaces;
+using EventManager.Services.ViewModels;
 
 namespace EventManager.WebApi.Controllers
 {
@@ -19,59 +14,30 @@ namespace EventManager.WebApi.Controllers
     [Route("api/[controller]")]
     public class EventsController: ControllerBase
     {
+        private readonly IEventManagerService _eventManagerService;
 
-        private readonly ILogger<EventsController> _logger;
-        private readonly IEventManagerRepository _repository;
-        private readonly IMapper _mapper;
-
-        public EventsController(
-            ILogger<EventsController> logger, 
-            IEventManagerRepository repository,
-            IMapper mapper)
+        public EventsController(IEventManagerService eventManagerService)
         {
-            _logger = logger;
-            _repository = repository;
-            _mapper = mapper;
+            _eventManagerService = eventManagerService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(EventViewModel model)
         {
-            try {
-                var mappedModel = _mapper.Map<Event>(model);
-                _repository.Add(mappedModel);
-                if(await _repository.SaveChangesAsync()) {
-                    return Created($"/api/event/{model.Id}", _mapper.Map<EventViewModel>(mappedModel));
-                }
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
-            }
+            var result = await _eventManagerService.Create(model);
+            if (result != default) {
+                return Created($"/api/event/{model.Id}", result);
+            } 
             return BadRequest();
         }
 
         [HttpPut("{eventId}")]
-        public async Task<IActionResult> Update(int eventId, Event model)
+        public async Task<IActionResult> Update(int eventId, EventViewModel model)
         {
-            try {
-                var ev = await _repository.GetEventAsyncById(eventId, false);
-                if (ev == null) {
-                    return NotFound();
-                }
-                ev = _mapper.Map(model, ev);
-                var lotsIds = new List<int>();
-                var socialNetworksIds = new List<int>();
-                model.Lots.ForEach(x => lotsIds.Add(x.Id));
-                model.SocialNetworks.ForEach(x => socialNetworksIds.Add(x.Id));
-                var lotsToRemove = ev.Lots.Where(x => !lotsIds.Contains(x.Id));
-                var socialNetworkIdsToRemove = ev.Lots.Where(x => !socialNetworksIds.Contains(x.Id));
-                if (lotsToRemove.Count() > 0) { _repository.DeleteRange(lotsToRemove.ToList()); }
-                if (socialNetworkIdsToRemove.Count() > 0) { _repository.DeleteRange(socialNetworkIdsToRemove.ToList()); }
-                _repository.Update(ev);
-                if (await _repository.SaveChangesAsync()) {
-                    return Created($"/api/event/{model.Id}",  _mapper.Map<EventViewModel>(ev));
-                }
-            } catch (Exception) {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
+            var result = await _eventManagerService.Update(eventId, model);
+            if (result != default)
+            {
+                return Created($"/api/event/{model.Id}", result);
             }
             return BadRequest();
         }
@@ -79,17 +45,10 @@ namespace EventManager.WebApi.Controllers
         [HttpDelete("{eventId}")]
         public async Task<IActionResult> Delete(int eventId)
         {
-            try {
-                var ev = await _repository.GetEventAsyncById(eventId, false);
-                if (ev == null) {
-                    return NotFound();
-                }
-                _repository.Delete(ev);
-                if (await _repository.SaveChangesAsync()) {
-                    return Ok();
-                }
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
+            var result = await _eventManagerService.Delete(eventId);
+            if (result)
+            {
+                return Ok();
             }
             return BadRequest();
         }
@@ -97,13 +56,7 @@ namespace EventManager.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try {
-                var events = await _repository.GetAllEventsAsync(true);
-                var result = _mapper.Map<IEnumerable<EventViewModel>>(events);
-                return Ok(result);
-            } catch (Exception e) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Database failed {e.Message} mapper {_mapper}");
-            }
+            return Ok(await _eventManagerService.Get());
         }
 
 
@@ -131,23 +84,13 @@ namespace EventManager.WebApi.Controllers
         [HttpGet("{eventId}")]
         public async Task<IActionResult> GetById(int eventId)
         {
-            try {
-                var result = _mapper.Map<EventViewModel>(await _repository.GetEventAsyncById(eventId, true));
-                return Ok(result);
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
-            }
+            return Ok(await _eventManagerService.GetById(eventId));
         }
 
-        [HttpGet("getByTheme/{theme}")]
-        public async Task<IActionResult> GetByTheme(string theme)
+        [HttpGet("search/{search}")]
+        public async Task<IActionResult> Search(string search)
         {
-            try {
-                var result = await _repository.GetAllEventsAsyncByTheme(theme, true);
-                return Ok(result);
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
-            }
+            return Ok(await _eventManagerService.Search(search));
         }
     }
 }

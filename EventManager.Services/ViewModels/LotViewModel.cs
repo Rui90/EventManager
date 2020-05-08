@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventManager.WebApi.ViewModels
+namespace EventManager.Services.ViewModels
 {
     public class LotViewModel
     {

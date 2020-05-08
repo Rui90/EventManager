@@ -2,9 +2,9 @@ using System.Linq;
 using AutoMapper;
 using EventManager.Domain;
 using EventManager.Domain.Identity;
-using EventManager.WebApi.ViewModels;
+using EventManager.Services.ViewModels;
 
-namespace EventManager.WebApi.Mappers
+namespace EventManager.Services.Mappers
 {
     public class AutoMapperProfiles : Profile
     {

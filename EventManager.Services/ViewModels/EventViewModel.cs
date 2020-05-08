@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventManager.WebApi.ViewModels
+namespace EventManager.Services.ViewModels
 {
     public class EventViewModel
     {   

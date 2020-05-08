@@ -18,7 +18,7 @@ namespace EventManager.Repository
          Task<bool> SaveChangesAsync();
 
         // LIST GETTERS
-         Task<Event[]> GetAllEventsAsyncByTheme(string Theme, bool includeGuests);
+         Task<Event[]> SearchEvents(string queryParam, bool includeGuests);
 
          Task<Event[]> GetAllEventsAsync(bool includeGuests);
 

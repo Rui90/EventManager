@@ -21,6 +21,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using EventManager.Services.Interfaces;
+using EventManager.Services.Implementations;
 
 namespace EventManager.WebApi
 {
@@ -62,6 +64,7 @@ namespace EventManager.WebApi
                 });
             
             services.AddScoped<IEventManagerRepository, EventManagerRepository>();
+            services.AddScoped<IEventManagerService, EventManagerService>();
             services.AddControllers(options => 
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();

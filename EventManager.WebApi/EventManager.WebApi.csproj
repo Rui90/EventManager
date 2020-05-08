@@ -17,5 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\EventManager.Domain\EventManager.Domain.csproj" />
     <ProjectReference Include="..\EventManager.Repository\EventManager.Repository.csproj" />
+    <ProjectReference Include="..\EventManager.Services\EventManager.Services.csproj" />
   </ItemGroup>
 </Project>
