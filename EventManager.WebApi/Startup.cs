@@ -63,7 +63,8 @@ namespace EventManager.WebApi
                     };
                 });
             
-            services.AddScoped<IEventManagerRepository, EventManagerRepository>();
+            services.AddScoped<IRepository, Repository.Repository>();
+            services.AddScoped<IGuestService, GuestService>();
             services.AddScoped<IEventManagerService, EventManagerService>();
             services.AddControllers(options => 
             {

@@ -13,15 +13,14 @@ using EventManager.Services.ViewModels;
 
 namespace EventManager.Services.Implementations
 {
-    public class EventManagerService : IEventManagerService
+    public class GuestService : IGuestService
     {
-
-        private readonly ILogger<EventManagerService> _logger;
+        private readonly ILogger<GuestService> _logger;
         private readonly IRepository _repository;
         private readonly IMapper _mapper;
 
-        public EventManagerService(
-            ILogger<EventManagerService> logger,
+        public GuestService(
+            ILogger<GuestService> logger,
             IRepository repository,
             IMapper mapper)
         {
@@ -30,15 +29,15 @@ namespace EventManager.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<EventViewModel> Create(EventViewModel model)
+        public async Task<GuestViewModel> Create(GuestViewModel model)
         {
             try
             {
-                var mappedModel = _mapper.Map<Event>(model);
+                var mappedModel = _mapper.Map<Guest>(model);
                 _repository.Add(mappedModel);
                 if (await _repository.SaveChangesAsync())
                 {
-                    return _mapper.Map<EventViewModel>(model);
+                    return _mapper.Map<GuestViewModel>(model);
                 }
                 return default;
             }
@@ -53,8 +52,8 @@ namespace EventManager.Services.Implementations
         {
             try
             {
-                var existingEvent = await GetEvent(id);
-                _repository.Delete(existingEvent);
+                var guest = await GetGuest(id);
+                _repository.Delete(guest);
                 return await _repository.SaveChangesAsync();
             }
             catch (Exception e)
@@ -64,12 +63,12 @@ namespace EventManager.Services.Implementations
             }
         }
 
-        public async Task<IEnumerable<EventViewModel>> Get()
+        public async Task<IEnumerable<GuestViewModel>> Get()
         {
             try
             {
-                var events = await _repository.GetAllEventsAsync(true);
-                var result = _mapper.Map<IEnumerable<EventViewModel>>(events);
+                var events = await _repository.GetAllGuestsAsync(true);
+                var result = _mapper.Map<IEnumerable<GuestViewModel>>(events);
                 return result;
             }
             catch (Exception e)
@@ -79,17 +78,17 @@ namespace EventManager.Services.Implementations
             }
         }
 
-        public async Task<EventViewModel> GetById(int id)
+        public async Task<GuestViewModel> GetById(int id)
         {
-            return _mapper.Map<EventViewModel>(await GetEvent(id, true));
+            return _mapper.Map<GuestViewModel>(await GetGuest(id, true));
         }
 
-        public async Task<IEnumerable<EventViewModel>> Search(string query)
+        public async Task<IEnumerable<GuestViewModel>> Search(string query)
         {
             try
             {
-                var events = await _repository.SearchEvents(query, true);
-                var result = _mapper.Map<IEnumerable<EventViewModel>>(events);
+                var guests = await _repository.SearchGuests(query, true);
+                var result = _mapper.Map<IEnumerable<GuestViewModel>>(guests);
                 return result;
             }
             catch (Exception e)
@@ -99,24 +98,15 @@ namespace EventManager.Services.Implementations
             }
         }
 
-        public async Task<EventViewModel> Update(int id, EventViewModel model)
+        public async Task<GuestViewModel> Update(int id, GuestViewModel model)
         {
             try
             {
-                var existingEvent = await GetEvent(id);
-                existingEvent = _mapper.Map(model, existingEvent);
-                var lotsIds = new List<int>();
-                var socialNetworksIds = new List<int>();
-                model.Lots.ForEach(x => lotsIds.Add(x.Id));
-                model.SocialNetworks.ForEach(x => socialNetworksIds.Add(x.Id));
-                var lotsToRemove = existingEvent.Lots.Where(x => !lotsIds.Contains(x.Id));
-                var socialNetworkIdsToRemove = existingEvent.Lots.Where(x => !socialNetworksIds.Contains(x.Id));
-                if (lotsToRemove.Count() > 0) { _repository.DeleteRange(lotsToRemove.ToList()); }
-                if (socialNetworkIdsToRemove.Count() > 0) { _repository.DeleteRange(socialNetworkIdsToRemove.ToList()); }
-                _repository.Update(existingEvent);
+                var guest = await GetGuest(id);
+                _repository.Update(model);
                 if (await _repository.SaveChangesAsync())
                 {
-                    return _mapper.Map<EventViewModel>(existingEvent);
+                    return model;
                 }
                 return default;
             }
@@ -127,15 +117,16 @@ namespace EventManager.Services.Implementations
             }
         }
 
-        private async Task<Event> GetEvent(int eventId, bool includeGuests = false)
+        private async Task<Guest> GetGuest(int guestId, bool includeGuests = false)
         {
-            var existingEvent = await _repository.GetEventAsyncById(eventId, includeGuests);
-            if (existingEvent == null)
+            var guest = await _repository.GetGuestAsync(guestId, includeGuests);
+            if (guest == null)
             {
-                _logger.LogWarning($"Event {eventId} does not exist");
+                _logger.LogWarning($"Guest {guestId} does not exist");
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
-            return existingEvent;
+            return guest;
         }
+
     }
 }

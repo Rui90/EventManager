@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using EventManager.Repository;
 using EventManager.Domain;
+using EventManager.Services.Interfaces;
+using EventManager.Services.ViewModels;
 
 namespace EventManager.WebApi.Controllers
 {
@@ -14,60 +16,43 @@ namespace EventManager.WebApi.Controllers
     {
 
         private readonly ILogger<GuestsController> _logger;
-        private readonly IEventManagerRepository _repository;
+        private readonly IGuestService _guestService;
 
-        public GuestsController(ILogger<GuestsController> logger, IEventManagerRepository repository)
+        public GuestsController(ILogger<GuestsController> logger, IGuestService guestService)
         {
             _logger = logger;
-            _repository = repository;
+            _guestService = guestService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Guest model)
+        public async Task<IActionResult> Create(GuestViewModel model)
         {
-            try {
-                _repository.Add(model);
-                if(await _repository.SaveChangesAsync()) {
-                    return Created($"/api/guest/{model.Id}", model);
-                }
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
+            var result = await _guestService.Create(model);
+            if (result != default)
+            {
+                return Created($"/api/event/{model.Id}", result);
             }
             return BadRequest();
         }
 
         [HttpPut("{guestId}")]
-        public async Task<IActionResult> Update(int guestId, Guest model)
+        public async Task<IActionResult> Update(int guestId, GuestViewModel model)
         {
-            try {
-                var ev = await _repository.GetGuestAsync(guestId, false);
-                if (ev == null) {
-                    return NotFound();
-                }
-                _repository.Update(model);
-                if (await _repository.SaveChangesAsync()) {
-                    return Created($"/api/event/{model.Id}", model);
-                }
-            } catch (Exception e) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
+            var result = await _guestService.Update(guestId, model);
+            if (result != default)
+            {
+                return Created($"/api/event/{model.Id}", result);
             }
-            return BadRequest();
+            return BadRequest(); ;
         }
 
         [HttpDelete("{guestId}")]
         public async Task<IActionResult> Delete(int guestId)
         {
-            try {
-                var ev = await _repository.GetGuestAsync(guestId, false);
-                if (ev == null) {
-                    return NotFound();
-                }
-                _repository.Delete(ev);
-                if (await _repository.SaveChangesAsync()) {
-                    return Ok();
-                }
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
+            var result = await _guestService.Delete(guestId);
+            if (result)
+            {
+                return Ok();
             }
             return BadRequest();
         }
@@ -75,34 +60,19 @@ namespace EventManager.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try {
-                var result = await _repository.GetAllGuestsAsync(true);
-                return Ok(result);
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
-            }
+            return Ok(await _guestService.Get());
         }
 
         [HttpGet("{guestId}")]
         public async Task<IActionResult> GetById(int guestId)
         {
-            try {
-                var result = await _repository.GetGuestAsync(guestId, true);
-                return Ok(result);
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
-            }
+            return Ok(await _guestService.GetById(guestId));
         }
 
-        [HttpGet("getByName/{name}")]
-        public async Task<IActionResult> GetByTheme(string name)
+        [HttpGet("search/{search}")]
+        public async Task<IActionResult> Search(string search)
         {
-            try {
-                var result = await _repository.GetAllGuestsByName(name, true);
-                return Ok(result);
-            } catch (Exception) {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
-            }
+            return Ok(await _guestService.Search(search));
         }
     }
 

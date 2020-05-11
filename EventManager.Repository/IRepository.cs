@@ -4,7 +4,7 @@ using EventManager.Domain;
 
 namespace EventManager.Repository
 {
-    public interface IEventManagerRepository
+    public interface IRepository
     {
         // ENTITY CREATE, UPDATE, DELETE
          void Add<T>(T entity) where T : class;
@@ -28,7 +28,7 @@ namespace EventManager.Repository
 
          Task<Guest> GetGuestAsync(int guestId, bool includeEvents);
 
-         Task<Guest[]> GetAllGuestsByName(string name, bool includeEvents);
+         Task<Guest[]> SearchGuests(string search, bool includeEvents);
 
     }
 }

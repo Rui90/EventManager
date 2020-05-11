@@ -7,11 +7,11 @@ using EventManager.Repository.Data;
 
 namespace EventManager.Repository
 {
-    public class EventManagerRepository : IEventManagerRepository
+    public class Repository : IRepository
     {
         private readonly DataContext _context;
 
-        public EventManagerRepository(DataContext context) {
+        public Repository(DataContext context) {
             this._context = context;
             this._context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
@@ -86,13 +86,13 @@ namespace EventManager.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<Guest[]> GetAllGuestsByName(string name, bool includeEvents)
+        public async Task<Guest[]> SearchGuests(string search, bool includeEvents)
         {
             IQueryable<Guest> query = _context.Guests.Include(e => e.SocialNetworks);
             if (includeEvents) {
                 query = query.Include(e => e.GuestsEvents).ThenInclude(e => e.Event);
             }
-            query = query.OrderBy(q => q.Name).Where(q => q.Name.ToLower().Contains(name.ToLower()));
+            query = query.OrderBy(q => q.Name).Where(q => q.Name.ToLower().Contains(search.ToLower()));
             return await query.ToArrayAsync();
         }
 
