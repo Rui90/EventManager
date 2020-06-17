@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventManager.Domain
 {
@@ -13,6 +14,7 @@ namespace EventManager.Domain
 
         public string Theme {get;set;}
 
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Capacity {get;set;}
 
         public string ImageUrl { get; set;}

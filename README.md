@@ -11,8 +11,8 @@ It uses the Identity Authentication System with the normal JWT Authorization Tok
 
 .NET Core Organization into multiple projects:
 
-- WebApi: where are the controllers that we will access
-- Repository: Migrations and database accessors
+- WebApi: available controllers
+- Repository: Database accessors
 - Domain: All the models that we're going to use with Entity Framework and relations betweens entities
 
 All the endpoints current available can be accessed be seen on Swagger available through:

@@ -38,7 +38,8 @@ namespace EventManager.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), 
+                b => b.MigrationsAssembly("EventManager.WebApi")));
             IdentityBuilder builder = services.AddIdentityCore<User>(options => {
                 // setting them do false to allow dummy passwords
                 options.Password.RequireDigit = false;
