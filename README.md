@@ -7,13 +7,13 @@ The project will increment across the time.
 ### Run API With Docker ###
 
 In the base folder where the solution are run the following command to build the application:
-
+```
 docker build -f EventManager.WebApi/Dockerfile -t  webapi .
-
+```
 Then to run:
-
+```
 docker run -p 8080:80 --name the_experiment_container the_experiment
-
+```
 Finally you can consult the swagger documentation of the ip at:
 
 <http://localhost:8080/swagger/index.html>
