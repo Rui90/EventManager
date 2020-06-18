@@ -4,6 +4,20 @@ Basic REST Api Sekeleton on top of .NET Core 3.1 with Entity Framework 3.1, inte
 
 The project will increment across the time.
 
+### Run API With Docker ###
+
+In the base folder where the solution are run the following command to build the application:
+
+docker build -f EventManager.WebApi/Dockerfile -t  webapi .
+
+Then to run:
+
+docker run -p 8080:80 --name the_experiment_container the_experiment
+
+Finally you can consult the swagger documentation of the ip at:
+
+<http://localhost:8080/swagger/index.html>
+
 ### .NET Core introduction
 
 Small service that returns events that are stored in an sql lite database.
@@ -38,6 +52,7 @@ Angular Organization:
 - Components: Where is the actual content and logic that we will access within the page
 - Helpers: Where are the pipes and directives
 - Util: Static methods and constants
+
 
 ### Upcoming
 

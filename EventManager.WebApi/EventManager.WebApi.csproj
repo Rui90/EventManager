@@ -23,4 +23,7 @@
     <ProjectReference Include="..\EventManager.Repository\EventManager.Repository.csproj" />
     <ProjectReference Include="..\EventManager.Services\EventManager.Services.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
