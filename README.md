@@ -12,7 +12,7 @@ docker build -f EventManager.WebApi/Dockerfile -t  webapi .
 ```
 Then to run:
 ```
-docker run -p 8080:80 --name the_experiment_container the_experiment
+docker run -p 8080:80 webapi
 ```
 Finally you can consult the swagger documentation of the ip at:
 
