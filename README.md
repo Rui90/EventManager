@@ -26,6 +26,8 @@ In the base folder where the soluton is just run the following command:
 docker-compose up
 ```
 
+You will be able to run the application through the following link: <http://localhost:9000>
+
 To stop the containers:
 
 ```
