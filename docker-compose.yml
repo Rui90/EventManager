@@ -1,0 +1,32 @@
+version: "3"
+networks: 
+    dockersql-network:
+      driver: bridge  
+services:
+    api:
+        build:
+            context: ./
+            dockerfile: EventManager.WebApi/Dockerfile
+        networks:
+            - dockersql-network
+        ports:
+            - "8000:80"
+        depends_on:
+            - db
+    db:
+        image: "mcr.microsoft.com/mssql/server"
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "TestingPassword2020"
+        networks:
+            - dockersql-network
+        ports:
+            - "1433:1433"      
+    web:
+        container_name: event-manager-web-container
+        build: ./EventManager-App
+        ports:
+          - '9000:80'
+        depends_on: 
+            - api
+    

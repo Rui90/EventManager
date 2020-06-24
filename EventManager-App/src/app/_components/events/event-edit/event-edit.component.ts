@@ -7,6 +7,7 @@ import { BsLocaleService, } from 'ngx-bootstrap/datepicker';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 defineLocale('pt-br', ptBrLocale);
 @Component({
@@ -53,7 +54,7 @@ export class EventEditComponent implements OnInit {
       this.eventService.getEventById(eventId).subscribe(
         (response: Event) => {
           this.eventModel = Object.assign({}, response),
-          this.imageUrl = response.imageUrl ? `http://localhost:5000/resources/images/${response.imageUrl}` : 'assets/images.png';
+          this.imageUrl = response.imageUrl ? `${environment.api}/resources/images/${response.imageUrl}` : 'assets/images.png';
           this.fileNameToUpdate = response.imageUrl ? response.imageUrl.toString() : '';
           this.registerForm.patchValue(this.eventModel);
           this.eventModel.lots.forEach(lot => {
@@ -156,7 +157,7 @@ export class EventEditComponent implements OnInit {
         this.showImage = false;
         this.eventService.uploadDocument(this.file, this.fileNameToUpdate).subscribe(
           () => {
-            this.imageUrl = `http://localhost:5000/resources/images/${this.eventModel.imageUrl}`;
+            this.imageUrl = `${environment.api}/resources/images/${this.eventModel.imageUrl}`;
           }
         ).add(() => this.showImage = true);
       }

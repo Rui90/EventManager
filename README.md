@@ -18,6 +18,20 @@ Finally you can consult the swagger documentation of the ip at:
 
 <http://localhost:8080/swagger/index.html>
 
+### Run Application With Docker ###
+
+In the base folder where the soluton is just run the following command:
+
+```
+docker-compose up
+```
+
+To stop the containers:
+
+```
+docker-compose down
+```
+
 ### .NET Core introduction
 
 Small service that returns events that are stored in an sql lite database.
@@ -31,7 +45,7 @@ It uses the Identity Authentication System with the normal JWT Authorization Tok
 
 All the endpoints current available can be accessed be seen on Swagger available through:
 
-http://localhost:5000/swagger/index.html
+http://localhost:8000/swagger/index.html
 
 ### Angular introduction (Currently not working as expected waiting for Authentication integration)
 
@@ -53,10 +67,8 @@ Angular Organization:
 - Helpers: Where are the pipes and directives
 - Util: Static methods and constants
 
-
 ### Upcoming
 
-- Docker
 - Project clean up (Avoid repetition, make it generic)
 - Permissions
 - Internationalization

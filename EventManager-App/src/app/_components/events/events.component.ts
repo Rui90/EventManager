@@ -7,6 +7,7 @@ import { BsLocaleService, } from 'ngx-bootstrap/datepicker';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
 defineLocale('pt-br', ptBrLocale);
 @Component({
@@ -96,7 +97,7 @@ export class EventsComponent implements OnInit {
   }
 
   getUrl(imageUrl: string) {
-    return `http://localhost:5000/resources/images/${imageUrl}`;
+    return `${environment.api}resources/images/${imageUrl}`;
   }
 
   onFileChange(event) {

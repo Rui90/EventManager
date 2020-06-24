@@ -5,13 +5,14 @@ import { map } from 'rxjs/operators';
 import { User } from '../_models/User';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  baseUrl = 'http://localhost:5000/api/user/';
+  baseUrl = environment.api + 'api/user/';
   jwtHelper = new JwtHelperService();
   decodeToken: any;
 
